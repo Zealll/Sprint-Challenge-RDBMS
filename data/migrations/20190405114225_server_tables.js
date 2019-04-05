@@ -8,7 +8,7 @@ exports.up = function(knex, Promise) {
 
       tbl.string('description', 400).notNullable()
 
-      tbl.boolean('completed').defaultTo(false)
+      tbl.boolean('completed').notNullable().defaultTo(false)
   })
 
   .createTable('actions', tbl => {
@@ -24,10 +24,12 @@ exports.up = function(knex, Promise) {
          .references('id')
          .inTable('projects')
 
-      tbl.boolean('completed').defaultTo(false)
+      tbl.boolean('completed').notNullable().defaultTo(false)
   })
 };
 
 exports.down = function(knex, Promise) {
-  
+    return knex.schema
+    .dropTableIfExists('projects')
+    .dropTableIfExists('actions')
 };
