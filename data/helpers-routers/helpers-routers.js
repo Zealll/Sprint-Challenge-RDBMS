@@ -43,6 +43,26 @@ router.get('/:id', (req, res) => {
     .catch(error => res.status(500).json(error))
 })
 
+router.post('/', (req, res) => {
+    const body = req.body
+
+    if(!body.name || !body.description) {
+        res.status(403)
+           .json({message: "You need to fill out necessary field(s): ('name', and 'description)."})
+    } else {
+        db('projects')
+        .insert(body)
+        .then(ids => {
+            const id = ids[0]
+
+            db('projects')
+            .where({id})
+            .first()
+            .then(newProject => res.status(201).json(newProject))
+        })
+    }
+})
+
 
 
 module.exports = router
