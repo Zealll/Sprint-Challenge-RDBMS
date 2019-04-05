@@ -48,7 +48,7 @@ router.post('/', (req, res) => {
 
     if(!body.name || !body.description) {
         res.status(403)
-           .json({message: "You need to fill out necessary field(s): ('name', and 'description)."})
+           .json({message: "You need to fill out necessary field(s): ('name', and 'description')."})
     } else {
         db('projects')
         .insert(body)
@@ -60,6 +60,27 @@ router.post('/', (req, res) => {
             .first()
             .then(newProject => res.status(201).json(newProject))
         })
+    }
+})
+
+router.post('/projects/actions', (req, res) => {
+    const body = req.body 
+
+    if(!body.description || !body.notes || !body.project_id) {
+        res.status(403)
+           .json({message: "You need to fill out necessary field(s): ('notes', 'description', and 'project_id')."})
+    } else {
+        db('actions')
+        .insert(body)
+        .then(ids => {
+            const id = ids[0]
+
+            db('actions')
+            .where({id})
+            .first()
+            .then(newAction => res.status(201).json(newAction))
+        })
+        .catch(error => res.status(500).json(error))
     }
 })
 
