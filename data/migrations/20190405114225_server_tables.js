@@ -14,15 +14,15 @@ exports.up = function(knex, Promise) {
   .createTable('actions', tbl => {
       tbl.increments()
 
+      tbl.string('description', 400).notNullable()
+
+      tbl.string('notes')
+
       tbl.integer('project_id')
          .notNullable()
          .unsigned()
          .references('id')
          .inTable('projects')
-
-      tbl.string('description', 400).notNullable()
-
-      tbl.string('notes')
 
       tbl.boolean('completed').defaultTo(false)
   })
