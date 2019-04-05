@@ -21,18 +21,24 @@ router.get('/:id', (req, res) => {
     .where('projects.id', id)
     .then(project => {
         const selectedProject = project[0]
-        db('actions')
-        .where('actions.project_id', id)
-        .then(actions => {
-            res.json({
-                ...selectedProject,
-                completed: selectedProject.completed === 0 ? false : true,
-                actions: actions.map(actions => ({
-                    ...actions,
-                    completed: actions.completed === 0 ? false : true,
-                }))
+        if (!selectedProject) {
+            res.status(404).json({message: `Project with an ID of ${id} not found`})
+        } else {
+            
+            db('actions')
+            .where('actions.project_id', id)
+            .then(actions => {
+                res.json({
+                    ...selectedProject,
+                    completed: selectedProject.completed === 0 ? false : true,
+                    actions: actions.map(actions => ({
+                        ...actions,
+                        completed: actions.completed === 0 ? false : true,
+                    }))
+                })
             })
-        })
+        }
+        
     })
     .catch(error => res.status(500).json(error))
 })
